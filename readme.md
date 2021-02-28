@@ -1,2 +1,2 @@
 # 
-Học EKS từ [workshop](https://www.eksworkshop.com/)
+Học EKS từ [eksworkshop.c](https://www.eksworkshop.com/)
