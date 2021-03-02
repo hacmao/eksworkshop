@@ -123,6 +123,28 @@ kubectl -n game-2048 get targetgroupbindings ${GAME_INGRESS_NAME} -o yaml
 
 ![web](img/2021-03-02-10-48-51.png)  
 
+## NodePort vs LoadBalancer vs Ingress  
+
+[ref](https://medium.com/google-cloud/kubernetes-nodeport-vs-loadbalancer-vs-ingress-when-should-i-use-what-922f010849e0)  
+
++ Nodeport dùng cho expose service, bằng cách mở một port trên các node/vm :  
+
+![nodeport](img/2021-03-02-15-39-18.png)  
+
+Sau đó thông qua service để điều hướng các request, tuy nhiên có một nhược điểm là khi các Node/Vm thay đổi Ip thì ứng dụng sẽ không truy cập được. Vì vậy dùng cho trường hợp ứng dụng không cần lúc nào cũng khả dụng.
+
++ LoadBalancer:  
+
+![loadbalancer](img/2021-03-02-15-40-54.png)  
+
+Dùng `LoadBalancer` để điều hướng tất cả các loại request, từ HTTP, HTTPS, TCP, UDP, ... Tuy nhiên với mỗi ứng dụng cần có một load balancer nên sẽ tiêu tốn tiền :)  
+
++ Ingress:  
+
+Cấu hình phức tạp hơn, có nhiều loại ingress với cách dùng khác nhau, chỉ cần 1 loadbalancer cho nhiều ứng dụng khác nhau, tuy chỉnh theo tên miền của Loadbalancer.  
+
+![lb](img/2021-03-02-15-43-13.png)
+
 ## Ref  
 
 + <https://kubernetes-sigs.github.io/aws-load-balancer-controller/guide/ingress/annotations/>  
