@@ -81,7 +81,7 @@ availabilityZones: ["${AZS[0]}", "${AZS[1]}", "${AZS[2]}"]
 managedNodeGroups:
 - name: nodegroup
   desiredCapacity: 3
-  instanceType: t3.small
+  instanceType: t2.micro
   ssh:
     allow: true
     publicKeyName: eksworkshop
@@ -99,5 +99,24 @@ EOF
 Chúng ta sẽ tạo một cluster có 3 node, mỗi node là một EC2 instance có instance type là `t3.small`, có ssh key là `eksworkshop`, có encryptkey là `${MASTER_ARN}` tạo từ bước trước.  
 Lưu ý, nếu không setup đúng các biến môi trường như trong workshop cần tự cấu hình trong file cài đặt :)  
 
-[Bug](https://github.com/kubernetes-sigs/aws-iam-authenticator/issues/174#issuecomment-450651720) : Một lưu ý nữa, ta cần thiết lập hai biến môi trường là `AWS_ACCESS_KEY_ID` và `AWS_SECRET_ACCESS_KEY`, để kubectl có thể xác thực, login vào cluster vừa tạo.  
+Tạo cluster :  
 
+```bash
+eksctl create cluster -f eksworkshop.yaml
+```
+
+Test cluster :  
+
+```bash
+kubectl get nodes 
+```
+
+[Note](https://github.com/kubernetes-sigs/aws-iam-authenticator/issues/174#issuecomment-450651720) : Một lưu ý nữa, ta cần thiết lập hai biến môi trường là `AWS_ACCESS_KEY_ID` và `AWS_SECRET_ACCESS_KEY`, để kubectl có thể xác thực, login vào cluster vừa tạo.  
+
+Lưu worker role:  
+
+```bash
+STACK_NAME=$(eksctl get nodegroup --cluster eksworkshop-eksctl -o json | jq -r '.[].StackName')
+ROLE_NAME=$(aws cloudformation describe-stack-resources --stack-name $STACK_NAME | jq -r '.StackResources[] | select(.ResourceType=="AWS::IAM::Role") | .PhysicalResourceId')
+echo "export ROLE_NAME=${ROLE_NAME}" | tee -a ~/.bash_profile
+```
